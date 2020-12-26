@@ -39,6 +39,46 @@ def filter_data(data, num=0, mode="g"):
         print("报错位置在文件{0}的第{1}行".format(e.__traceback__.tb_frame.f_globals["__file__"], e.__traceback__.tb_lineno))
 
 
+# 根据年份检查NationData列表数据顺序，-1倒序，1正序，0乱序，None无序（无法判断，情况有列表元素少于2个，全部相等）
+def check_data_order_by_year(data):
+    if data is None:
+        print("check_data_order_by_year 函数传入参数data为空值")
+    else:
+        try:
+            length = len(data)
+            if length <= 1:
+                return None
+            else:
+                if int(data[0].year) > int(data[1].year):
+                    for i in range(0, length - 2):
+                        if int(data[i].year) < int(data[i + 1].year):
+                            return 0
+                    return -1
+                elif int(data[0].year) < int(data[1].year):
+                    for i in range(0, length - 2):
+                        if int(data[i].year) > int(data[i + 1].year):
+                            return 0
+                    return 1
+                else:
+                    order = None
+                    for i in range(0, length - 2):
+                        if int(data[i].year) > int(data[i + 1].year):
+                            if order == 1:
+                                order = 0
+                                break
+                            elif order is None:
+                                order = -1
+                        elif int(data[i].year) < int(data[i + 1].year):
+                            if order == -1:
+                                order = 0
+                                break
+                            elif order is None:
+                                order = 1
+                    return order
+        except TypeError as e:
+            print("数据不可迭代，", end='')
+            print("报错位置在文件{0}的第{1}行".format(e.__traceback__.tb_frame.f_globals["__file__"], e.__traceback__.tb_lineno))
+
+
 if __name__ == "__main__":
     pass
-
