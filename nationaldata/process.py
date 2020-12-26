@@ -11,13 +11,29 @@ def filter_data(data, num=0, mode="g"):
         return
     try:
         for item in data:
-            nation_dict = data[item]
-            index = 0
-            for i in nation_dict.data:
-                if i.data <= 0:
-                    nation_dict.data.pop(index)
+            data_item = data[item].data
+            for i in range(len(data_item) - 1, -1, -1):
+                data_value = data_item[i].data
+                if mode[0] == "g":
+                    if len(mode) == 2:
+                        if data_value < num:
+                            del data_item[i]
+                    else:
+                        if data_value <= num:
+                            del data_item[i]
+                elif mode[0] == "l":
+                    if len(mode) == 2:
+                        if data_value > num:
+                            del data_item[i]
+                    else:
+                        if data_value >= num:
+                            del data_item[i]
+                elif mode[0] == "e":
+                    if data_value != num:
+                        del data_item[i]
                 else:
-                    index += 1
+                    print("filter_data 函数输入的过滤模式 {0} 错误".format(mode))
+                    return
     except TypeError as e:
         print("数据不可迭代，", end='')
         print("报错位置在文件{0}的第{1}行".format(e.__traceback__.tb_frame.f_globals["__file__"], e.__traceback__.tb_lineno))
