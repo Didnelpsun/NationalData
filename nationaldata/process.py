@@ -39,7 +39,7 @@ def filter_data(data, num=0, mode="g"):
         print("报错位置在文件{0}的第{1}行".format(e.__traceback__.tb_frame.f_globals["__file__"], e.__traceback__.tb_lineno))
 
 
-# 根据年份检查NationData列表数据顺序，-1倒序，1正序，0乱序，None无序（无法判断，情况有列表元素少于2个，全部相等）
+# 根据年份检查NationData列表数据顺序，返回值-1倒序，1正序，0乱序，None无序（无法判断，情况有列表元素少于2个，全部相等）
 def check_data_order_by_year(data):
     if data is None:
         print("check_data_order_by_year 函数传入参数data为空值")
@@ -75,6 +75,17 @@ def check_data_order_by_year(data):
                             elif order is None:
                                 order = 1
                     return order
+        except TypeError as e:
+            print("数据不可迭代，", end='')
+            print("报错位置在文件{0}的第{1}行".format(e.__traceback__.tb_frame.f_globals["__file__"], e.__traceback__.tb_lineno))
+
+
+# 根据年份对NationData列表数据排序，mode为排序方式，-1倒序，1正序
+def sort_data_order_by_year(data, mode):
+    if data is None:
+        print("sort_data_order_by_year 函数传入参数data为空值")
+    else:
+        try:
         except TypeError as e:
             print("数据不可迭代，", end='')
             print("报错位置在文件{0}的第{1}行".format(e.__traceback__.tb_frame.f_globals["__file__"], e.__traceback__.tb_lineno))
