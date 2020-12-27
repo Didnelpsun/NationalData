@@ -15,9 +15,10 @@ if __name__ == "__main__":
     #
     url3 = "https://data.stats.gov.cn/easyquery.htm?m=QueryData&dbcode=hgnd&rowcode=zb&colcode=sj&wds=%5B%5D&dfwds=%5B%7B%22wdcode%22%3A%22sj%22%2C%22valuecode%22%3A%22LAST5%22%7D%5D&k1=1608998918773"
     result1 = get_data(url1)
-    result2 = get_data(url2)
-    result3 = get_data(url3)
+    # result2 = get_data(url2)
+    # result3 = get_data(url3)
     filter_data(result1)
+    print_data(result1)
     result4 = get_data_by_name(result1, '文化办公用品类摊位数')
     # for item in result4:
     #     print(item.data)

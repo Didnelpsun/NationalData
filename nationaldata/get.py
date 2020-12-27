@@ -52,17 +52,18 @@ def get_data(url):
     except KeyError as e:
         print("数据格式字典不存在对应键：{0}，".format(str(e)), end='')
         print("报错位置在文件{0}的第{1}行".format(e.__traceback__.tb_frame.f_globals["__file__"], e.__traceback__.tb_lineno))
-        return
+        return None
     except IndexError as e:
         print("数据格式错误导致索引越界，", end='')
         print("报错位置在文件{0}的第{1}行".format(e.__traceback__.tb_frame.f_globals["__file__"], e.__traceback__.tb_lineno))
-        return
+        return None
     return diction
 
 
-# 根据数据字段中文名获取NationData列表
+# 根据数据字段中文名获取NationData列表，返回值None表示程序有误
 def get_data_by_name(data, name):
     if data is None:
+        print("get_data_by_name 函数传入参数data为空值")
         return None
     else:
         try:
@@ -72,13 +73,14 @@ def get_data_by_name(data, name):
         except TypeError as e:
             print("数据不可迭代，", end='')
             print("报错位置在文件{0}的第{1}行".format(e.__traceback__.tb_frame.f_globals["__file__"], e.__traceback__.tb_lineno))
-        return None
+            return None
 
 
 # 打印数据
 def print_data(data):
     if data is None:
         print("print_data 函数传入参数data为空值")
+        return None
     else:
         try:
             for item in data:
@@ -91,9 +93,11 @@ def print_data(data):
                 for i in nation_dict.data:
                     print("{0}：{1}".format(i.year, i.data))
                 print('\n')
+            return 0
         except TypeError as e:
             print("数据不可迭代，", end='')
             print("报错位置在文件{0}的第{1}行".format(e.__traceback__.tb_frame.f_globals["__file__"], e.__traceback__.tb_lineno))
+            return None
 
 
 # 打印纯粹的数据
@@ -116,9 +120,11 @@ def print_bare_data(data):
                 else:
                     print(nation_dict.data[0].year)
                 print('\n')
+            return 0
         except TypeError as e:
             print("数据不可迭代，", end='')
             print("报错位置在文件{0}的第{1}行".format(e.__traceback__.tb_frame.f_globals["__file__"], e.__traceback__.tb_lineno))
+            return None
 
 
 if __name__ == "__main__":
