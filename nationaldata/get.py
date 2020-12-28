@@ -22,8 +22,8 @@ def get_bare_data(url, cookies):
 #                                              |--------unit[string]
 #                                              |--------data[list]--NationData--year[string]
 #                                                         |-----NationData...|--data[float]
-def get_data(url):
-    data = get_bare_data(url)
+def get_data(url, cookies):
+    data = get_bare_data(url, cookies)
     diction = {}
     try:
         wordlist = data['returndata']['wdnodes'][0]['nodes']
