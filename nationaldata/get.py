@@ -9,8 +9,13 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 
 # 获取list格式的ajax数据
-def get_bare_data(url, cookies):
+def get_bare_data(url):
+    cookies = ""
+    with requests.get("https://data.stats.gov.cn", verify=False) as response:
+        for item in response.cookies:
+            cookies += item.name + "=" + item.value + "; "
     headers = header(cookies)
+    requests.get("https://data.stats.gov.cn/easyquery.htm?cn=C01&zb=A0I0A01&sj=2019", headers=headers, verify=False)
     # 使用了反爬虫所以必须加上完整请求头
     with requests.get(url, verify=False, headers=headers) as response:
         return json.loads(response.text)
@@ -21,9 +26,11 @@ def get_bare_data(url, cookies):
 #      |--------code_key...                    |--------exp[string]
 #                                              |--------unit[string]
 #                                              |--------data[list]--NationData--year[string]
-#                                                         |-----NationData...|--data[float]
-def get_data(url, cookies):
-    data = get_bare_data(url, cookies)
+#                                                           |           |-------data[float]
+#                                                           |
+#                                                           |-------NationData...
+def get_data(url):
+    data = get_bare_data(url)
     diction = {}
     try:
         wordlist = data['returndata']['wdnodes'][0]['nodes']
