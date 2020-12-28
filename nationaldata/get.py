@@ -1,33 +1,16 @@
 # -*- coding: utf-8 -*-
 import json
 import requests
-from nationaldata.data_class import NationDictData, NationData
+from nationaldata.data_class import NationDictData, NationData, header
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 # requests方式过滤SSL不安全警告
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
-# 定义默认请求头
-default_headers = {
-        "Accept": "application/json, text/javascript, */*; q=0.01",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Accept-Language": "zh-CN,zh;q=0.9",
-        "Connection": "keep-alive",
-        "Cookie": "_trs_uv=kj4gd4hn_6_h5ld; JSESSIONID=7iCamhpmDETtsD7gqF6uCz2TpywVXKaNqXwCgarZdmDIVSQlC-67!1550732730; u=1",
-        "Host": "data.stats.gov.cn",
-        "Referer": "https://data.stats.gov.cn/easyquery.htm?cn=C01&zb=A0G0X",
-        "Sec-Fetch-Dest": "empty",
-        "Sec-Fetch-Mode": "cors",
-        "Sec-Fetch-Site": "same-origin",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.66 Safari/537.36",
-        "X-Requested-With": "XMLHttpRequest"
-}
-
 
 # 获取list格式的ajax数据
-def get_bare_data(url, headers=default_headers):
-    if default_headers is None:
-        headers = {}
+def get_bare_data(url, cookies):
+    headers = header(cookies)
     # 使用了反爬虫所以必须加上完整请求头
     with requests.get(url, verify=False, headers=headers) as response:
         return json.loads(response.text)

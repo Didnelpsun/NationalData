@@ -84,8 +84,8 @@ def check_data_order_by_year(data):
 
 
 # 根据年份对NationData列表数据排序，mode为排序方式，-1倒序，1正序
-# 当data顺序与目标一致或者data无序则直接返回，如果正好相反则反转，
-def sort_data_order_by_year(data, mode):
+# 当data顺序与目标一致或者data无序则直接返回0，如果正好相反则反转，如果乱序则一个个调整
+def sort_data_order_by_year(data, mode=-1):
     if mode != 1 and mode != -1:
         print("sort_data_order_by_year 函数输入的排序模式 {0} 错误".format(mode))
         return None
@@ -93,8 +93,18 @@ def sort_data_order_by_year(data, mode):
         print("sort_data_order_by_year 函数传入参数data为空值")
         return None
     else:
+        list_mode = check_data_order_by_year(data)
         try:
-            print()
+            if list_mode == mode or list_mode == 2:
+                return 0
+            elif list_mode == mode * -1:
+                data.reverse()
+                return 0
+            else:
+                if mode == -1:
+                    data.sort(key=lambda x: x['year'], reversed=True)
+                elif mode == 1:
+                    data.sort(key=lambda x: x['year'])
         except TypeError as e:
             print("数据不可迭代，", end='')
             print("报错位置在文件{0}的第{1}行".format(e.__traceback__.tb_frame.f_globals["__file__"], e.__traceback__.tb_lineno))
