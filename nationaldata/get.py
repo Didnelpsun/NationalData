@@ -11,25 +11,27 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 # 函数说明：
 # 获取Dict式的AJAX数据
 # 参数列表：
-# url[str]：获取数据的URL
+# base_url[str]：查询数据的URL
+# data_url[str]：获取数据的URL
 # 返回值：
 # dict[]：保存数据的字典
-def get_bare_data(url):
+def get_bare_data(base_url, data_url):
     cookies = ""
     with requests.get("https://data.stats.gov.cn", verify=False) as response:
         for item in response.cookies:
             cookies += item.name + "=" + item.value + "; "
     headers = header(cookies)
-    requests.get("https://data.stats.gov.cn/easyquery.htm?cn=C01&zb=A0I0A01&sj=2019", headers=headers, verify=False)
+    requests.get(base_url, headers=headers, verify=False)
     # 使用了反爬虫所以必须加上完整请求头
-    with requests.get(url, verify=False, headers=headers) as response:
+    with requests.get(data_url, verify=False, headers=headers) as response:
         return json.loads(response.text)
 
 
 # 函数说明：
 # 规范化数据格式
 # 参数列表：
-# url[str]：获取数据URL
+# base_url[str]：查询数据的URL
+# data_url[str]：获取数据的URL
 # 返回值：
 # None：程序错误
 # dict[string:NationDictData]：保存数据的字典
@@ -43,8 +45,8 @@ def get_bare_data(url):
 #                                                           |
 #                                                           |-------NationData...
 #
-def get_data(url):
-    data = get_bare_data(url)
+def get_data(base_url, data_url):
+    data = get_bare_data(base_url, data_url)
     diction = {}
     try:
         wordlist = data['returndata']['wdnodes'][0]['nodes']
@@ -77,6 +79,9 @@ def get_data_by_name(data, name, get_unit=False, get_exp=False):
     if data is None:
         print("get_data_by_name 函数传入参数data为空值")
         return None
+    if name is None:
+        print("get_data_by_name 函数传入参数name为空值")
+        return None
     try:
         data_list = []
         unit = ""
@@ -84,6 +89,8 @@ def get_data_by_name(data, name, get_unit=False, get_exp=False):
         for item in data:
             if str.strip(data[item].name) == str.strip(name):
                 data_list = data[item].data
+                unit = data[item].unit
+                exp = data[item].exp
         if get_unit is False and get_exp is False:
             return data_list
         elif get_unit is True and get_exp is False:
