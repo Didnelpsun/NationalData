@@ -3,6 +3,7 @@ import json
 import requests
 from nationaldata.data_class import NationDictData, NationData, header
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
+
 # requests方式过滤SSL不安全警告
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
@@ -67,21 +68,57 @@ def get_data(url):
 # 根据数据字段中文名获取NationData列表
 # 参数列表：
 # data[dict[string:NationDictData]]：源数据
+# get_unit[bool]：是否获取单位
+# get_exp[bool]：是否获取备注
 # 返回值：
 # None：程序有误
-# []：无对应字段
-# list[NationData]：对应名称的数据列表
-def get_data_by_name(data, name):
+# list[NationData], unit, exp：对应名称的数据列表，单位，备注
+def get_data_by_name(data, name, get_unit=False, get_exp=False):
     if data is None:
         print("get_data_by_name 函数传入参数data为空值")
         return None
     try:
+        data_list = []
+        unit = ""
+        exp = ""
         for item in data:
             if str.strip(data[item].name) == str.strip(name):
-                return data[item].data
-        return []
+                data_list = data[item].data
+        if get_unit is False and get_exp is False:
+            return data_list
+        elif get_unit is True and get_exp is False:
+            return data_list, unit
+        else:
+            return data_list, unit, exp
     except TypeError as e:
         print("get_data_by_name 函数数据不可迭代，", end='')
+        print("报错位置在文件{0}的第{1}行".format(e.__traceback__.tb_frame.f_globals["__file__"], e.__traceback__.tb_lineno))
+        return None
+
+
+# 函数说明：
+# 根据数据字段中文名获取时间列表与数据列表
+# 参数列表：
+# data[dict[string:NationDictData]]：源数据
+# 返回值：
+# None：程序有误
+# []：无对应字段
+# list[year], list[num]：对应名称的时间数据列表与数字数据列表
+def get_year_num_by_name(data, name):
+    years = []
+    nums = []
+    if data is None:
+        print("get_year_data_by_name 函数传入参数data为空值")
+        return None
+    try:
+        for item in data:
+            if str.strip(data[item].name) == str.strip(name):
+                for i in data[item].data:
+                    years.append(i.year)
+                    nums.append(i.data)
+        return years, nums
+    except TypeError as e:
+        print("get_year_data_by_name 函数数据不可迭代，", end='')
         print("报错位置在文件{0}的第{1}行".format(e.__traceback__.tb_frame.f_globals["__file__"], e.__traceback__.tb_lineno))
         return None
 
@@ -170,7 +207,8 @@ def print_bare_data(data):
             return 0
         except TypeError as e:
             print("数据不可迭代，", end='')
-            print("print_bare_data 报错位置在文件{0}的第{1}行".format(e.__traceback__.tb_frame.f_globals["__file__"], e.__traceback__.tb_lineno))
+            print("print_bare_data 报错位置在文件{0}的第{1}行".format(e.__traceback__.tb_frame.f_globals["__file__"],
+                                                            e.__traceback__.tb_lineno))
             return None
 
 

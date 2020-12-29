@@ -15,11 +15,11 @@ def filter_data(data, num=0, mode="g"):
     if data is None:
         print("filter_data 函数传入参数data为空值")
         return None
-    if len(mode) == 2 and mode[1] != "e":
-        print("filter_data 函数输入的过滤模式 {0} 错误".format(mode))
-        return None
     if type(num) != int and type(num) != float:
         print("filter_data 函数输入的过滤条件 {0} 类型为{1}不为数字".format(num, type(num)))
+        return None
+    if len(mode) == 2 and mode[1] != "e":
+        print("filter_data 函数输入的过滤模式 {0} 错误".format(mode))
         return None
     try:
         for item in data:
@@ -170,6 +170,31 @@ def sort_data_order_by_year(data, mode=-1):
             print("sort_data_order_by_year 函数数据不可迭代，", end='')
             print("报错位置在文件{0}的第{1}行".format(e.__traceback__.tb_frame.f_globals["__file__"], e.__traceback__.tb_lineno))
             return None
+
+
+# 函数说明：
+# 将处理过的list列表拆分为year和num两个部分
+# 参数列表：
+# data[list[NationData]]：源数据
+# 返回值：
+# None：程序有误
+# []：无数据
+# list[year], list[num]：对应名称的时间数据列表与数字数据列表
+def split_year_num_by_list(data):
+    years = []
+    nums = []
+    if data is None:
+        print("split_year_num_by_list 函数传入参数data为空值")
+        return None
+    try:
+        for item in data:
+            years.append(item.year)
+            nums.append(item.data)
+        return years, nums
+    except TypeError as e:
+        print("split_year_num_by_list 函数数据不可迭代，", end='')
+        print("报错位置在文件{0}的第{1}行".format(e.__traceback__.tb_frame.f_globals["__file__"], e.__traceback__.tb_lineno))
+        return None
 
 
 if __name__ == "__main__":
