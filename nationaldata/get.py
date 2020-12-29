@@ -3,12 +3,16 @@ import json
 import requests
 from nationaldata.data_class import NationDictData, NationData, header
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
-
 # requests方式过滤SSL不安全警告
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 
-# 获取list格式的ajax数据
+# 函数说明：
+# 获取Dict式的AJAX数据
+# 参数列表：
+# url[str]：获取数据的URL
+# 返回值：
+# dict[]：保存数据的字典
 def get_bare_data(url):
     cookies = ""
     with requests.get("https://data.stats.gov.cn", verify=False) as response:
@@ -21,7 +25,15 @@ def get_bare_data(url):
         return json.loads(response.text)
 
 
-# 规范化数据格式：
+# 函数说明：
+# 规范化数据格式
+# 参数列表：
+# url[str]：获取数据URL
+# 返回值：
+# None：程序错误
+# dict[string:NationDictData]：保存数据的字典
+# 注释说明：
+# 数据格式：
 # return[dict]--code_key[string]:value[NationDictData]--name[string]
 #      |--------code_key...                    |--------exp[string]
 #                                              |--------unit[string]
@@ -29,6 +41,7 @@ def get_bare_data(url):
 #                                                           |           |-------data[float]
 #                                                           |
 #                                                           |-------NationData...
+#
 def get_data(url):
     data = get_bare_data(url)
     diction = {}
@@ -40,33 +53,69 @@ def get_data(url):
         for item in datalist:
             diction[item['wds'][0]['valuecode']].data += [NationData(item['wds'][1]['valuecode'], item['data']['data'])]
     except KeyError as e:
-        print("数据格式字典不存在对应键：{0}，".format(str(e)), end='')
+        print("get_data 函数数据格式字典不存在对应键：{0}，".format(str(e)), end='')
         print("报错位置在文件{0}的第{1}行".format(e.__traceback__.tb_frame.f_globals["__file__"], e.__traceback__.tb_lineno))
         return None
     except IndexError as e:
-        print("数据格式错误导致索引越界，", end='')
+        print("get_data 函数数据格式错误导致索引越界，", end='')
         print("报错位置在文件{0}的第{1}行".format(e.__traceback__.tb_frame.f_globals["__file__"], e.__traceback__.tb_lineno))
         return None
     return diction
 
 
-# 根据数据字段中文名获取NationData列表，返回值None表示程序有误
+# 函数说明：
+# 根据数据字段中文名获取NationData列表
+# 参数列表：
+# data[dict[string:NationDictData]]：源数据
+# 返回值：
+# None：程序有误
+# []：无对应字段
+# list[NationData]：对应名称的数据列表
 def get_data_by_name(data, name):
     if data is None:
         print("get_data_by_name 函数传入参数data为空值")
         return None
-    else:
-        try:
-            for item in data:
-                if str.strip(data[item].name) == str.strip(name):
-                    return data[item].data
-        except TypeError as e:
-            print("数据不可迭代，", end='')
-            print("报错位置在文件{0}的第{1}行".format(e.__traceback__.tb_frame.f_globals["__file__"], e.__traceback__.tb_lineno))
-            return None
+    try:
+        for item in data:
+            if str.strip(data[item].name) == str.strip(name):
+                return data[item].data
+        return []
+    except TypeError as e:
+        print("get_data_by_name 函数数据不可迭代，", end='')
+        print("报错位置在文件{0}的第{1}行".format(e.__traceback__.tb_frame.f_globals["__file__"], e.__traceback__.tb_lineno))
+        return None
 
 
+# 函数说明：
+# 获取字典里的所有名称
+# 参数列表：
+# data[dict[string:NationDictData]]：源数据
+# 返回值：
+# None：程序错误
+# []：数据字段为空
+# list[str]：包含名称的列表
+def get_names_in_data(data):
+    names = []
+    if data is None:
+        print("get_names_in_data 函数传入参数data为空值")
+        return None
+    try:
+        for item in data:
+            names.append(data[item].name)
+        return names
+    except TypeError as e:
+        print("get_names_in_data 函数数据不可迭代，", end='')
+        print("报错位置在文件{0}的第{1}行".format(e.__traceback__.tb_frame.f_globals["__file__"], e.__traceback__.tb_lineno))
+        return None
+
+
+# 函数说明：
 # 打印数据
+# 参数列表：
+# data[dict[string:NationDictData]]：源数据
+# 返回值：
+# None：程序错误
+# 0：程序无误
 def print_data(data):
     if data is None:
         print("print_data 函数传入参数data为空值")
@@ -85,12 +134,20 @@ def print_data(data):
                 print('\n')
             return 0
         except TypeError as e:
-            print("数据不可迭代，", end='')
+            print("print_data 数据不可迭代，", end='')
             print("报错位置在文件{0}的第{1}行".format(e.__traceback__.tb_frame.f_globals["__file__"], e.__traceback__.tb_lineno))
             return None
 
 
+# 函数说明：
 # 打印纯粹的数据
+# 参数列表：
+# data[dict[string:NationDictData]]：源数据
+# 返回值：
+# None：程序错误
+# 0：程序无误
+# 注释说明：
+# 与print_data主要差别在于数据为纯粹的一列，方便复制粘贴
 def print_bare_data(data):
     if data is None:
         print("print_bare_data 函数传入参数data为空值")
@@ -113,7 +170,7 @@ def print_bare_data(data):
             return 0
         except TypeError as e:
             print("数据不可迭代，", end='')
-            print("报错位置在文件{0}的第{1}行".format(e.__traceback__.tb_frame.f_globals["__file__"], e.__traceback__.tb_lineno))
+            print("print_bare_data 报错位置在文件{0}的第{1}行".format(e.__traceback__.tb_frame.f_globals["__file__"], e.__traceback__.tb_lineno))
             return None
 
 
