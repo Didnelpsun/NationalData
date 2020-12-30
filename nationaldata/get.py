@@ -2,6 +2,7 @@
 import json
 import requests
 from nationaldata.data_class import NationDictData, NationData, header
+from nationaldata.process import sort_data_order_by_year
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 # requests方式过滤SSL不安全警告
@@ -111,7 +112,7 @@ def get_data_by_name(data, name, get_unit=False, get_exp=False):
 # None：程序有误
 # []：无对应字段
 # list[year], list[num]：对应名称的时间数据列表与数字数据列表
-def get_year_num_by_name(data, name):
+def get_year_num_by_name(data, name, is_sort=True, sort_mode=1):
     years = []
     nums = []
     if data is None:
@@ -120,7 +121,10 @@ def get_year_num_by_name(data, name):
     try:
         for item in data:
             if str.strip(data[item].name) == str.strip(name):
-                for i in data[item].data:
+                data_list = data[item].data.copy()
+                if is_sort:
+                    sort_data_order_by_year(data_list, mode=sort_mode)
+                for i in data_list:
                     years.append(i.year)
                     nums.append(i.data)
         return years, nums

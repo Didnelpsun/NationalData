@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# 处理数据
 
 # 函数说明：
 # 过滤所有数据
@@ -244,6 +245,36 @@ def split_year_num_by_list(data):
         return years, nums
     except TypeError as e:
         print("split_year_num_by_list 函数数据不可迭代，", end='')
+        print("报错位置在文件{0}的第{1}行".format(e.__traceback__.tb_frame.f_globals["__file__"], e.__traceback__.tb_lineno))
+        return None
+
+
+# 函数说明：
+# 将两个列表循环相减
+# 参数列表：
+# list1[list[int/float]]：源被减数据
+# list2[list[int/float]]：源减数据
+# 返回值：
+# None：程序有误
+# list[int/float]：对应的列表数字差值
+def float_list_sub(list1, list2):
+    data_list = []
+    if list1 is None:
+        print("list_sub 函数传入参数list1为空值")
+        return list2
+    if list2 is None:
+        print("list_sub 函数传入参数list2为空值")
+        return list1
+    if len(list1) != len(list2):
+        print("list_sub 函数传入参数list1,2长度不等")
+        return None
+    try:
+        for index in range(0, len(list1)):
+            data = float(list1[index]) - float(list2[index])
+            data_list.append(data)
+        return data_list
+    except TypeError as e:
+        print("list_sub 函数数据不可迭代，", end='')
         print("报错位置在文件{0}的第{1}行".format(e.__traceback__.tb_frame.f_globals["__file__"], e.__traceback__.tb_lineno))
         return None
 
