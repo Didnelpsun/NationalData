@@ -16,6 +16,7 @@ if __name__ == "__main__":
     woman_x, woman_y = get_year_num_by_name(data, "女性人口")
     plt.plot(man_x, float_list_sub(man_y, woman_y))
     plt.title('男女人数差值')
+    plt.xlabel('年份')
     plt.ylabel("万人")
     plt.show()
     show_data_list(base_url, data_url, ['城镇人口', '乡村人口'], title="城镇与乡村人口")

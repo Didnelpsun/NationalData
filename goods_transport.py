@@ -10,4 +10,4 @@ if __name__ == "__main__":
             "石太线货运量", "石德线货运量", "北同蒲线货运量", "南同蒲线货运量", "包兰线货运量", "新石线货运量", "太焦线货运量",
             "焦柳线货运量", "胶济线货运量", "陇海线货运量", "沪昆线货运量", "宝成线货运量", "南昆线货运量", "成昆线货运量", "兰新线货运量",
             "青藏线货运量"]
-    show_data_list(base_url, data_url, line, is_filter=False, is_replace=True, is_figure=False)
+    show_data_list(base_url, data_url, line, is_filter=False, is_replace=True, is_figure=False, title="铁路主干线货运量")

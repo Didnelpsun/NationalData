@@ -45,7 +45,7 @@ class Plot(Enum):
 # 0：程序无误
 def show_data(base_url, data_url, title, is_filter=True, filter_num=0, filter_mode="g", is_replace=False,
               replace_source=0, replace_target=None, is_sort_by_year=True, sort_by_year_mode=1,
-              show_title=True, color="r", plot_style=Plot.marker, marker="+", line_style="-",
+              show_title=True, color="r", plot_style=Plot.line, marker="+", line_style="-",
               xlabel_show=True, xlabel="年份", ylabel_show=True, ylabel=None):
     data = get_data(base_url, data_url)
     if data is None:
