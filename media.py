@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # 媒体数据
 
-from nationaldata.show import show_data, Plot
+from nationaldata.show import show_data, Plot, get_data
 
 if __name__ == "__main__":
     base_url = "https://data.stats.gov.cn/easyquery.htm?cn=C01&zb=A0G0T&sj=2019"
@@ -10,3 +10,4 @@ if __name__ == "__main__":
     show_data(base_url, data_url, '报刊期发数', plot_style=Plot.line)
     show_data(base_url, data_url, '汇票业务', plot_style=Plot.line)
     show_data(base_url, data_url, '集邮业务量', plot_style=Plot.line)
+    get_data(base_url, data_url)
